@@ -1,0 +1,20 @@
+[HtmlNode(p, None, children: 
+    [LeafNode(None, This is , None), 
+    LeafNode(b, bolded, None), LeafNode(None,  paragraph, None)], None), 
+    HtmlNode(p, None, children: 
+        [LeafNode(None, This is another paragraph with , None), 
+        LeafNode(i, italic, None), 
+        LeafNode(None,  text and , None), 
+        LeafNode(code, code, None), 
+        LeafNode(None,  here
+This is the same paragraph on a new line, None)], None), 
+    HtmlNode(ul, None, children: [HtmlNode(li, None, children: 
+        [LeafNode(None, [], None)], None), 
+        HtmlNode(li, None, children: 
+            [LeafNode(None, [], None)], None)], None), 
+            HtmlNode(ol, None, children: [HtmlNode(li, None, children: [LeafNode(None, [], None)], None), HtmlNode(li, None, children: [LeafNode(None, [], None)], None)], None), HtmlNode(code, None, children: [LeafNode(code, 
+this = that
+if that > other:
+    this.stop
+, None)], None), HtmlNode(p, None, children: [LeafNode(None, more regular paragraphs for me.
+in smae blockk, None)], None)]
