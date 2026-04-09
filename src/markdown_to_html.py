@@ -1,9 +1,10 @@
 from textnode import TextNode, TextType, BlockType, text_to_textnodes, block_to_block_type, markdown_to_blocks, text_node_to_html_node
 from htmlnode import HtmlNode, LeafNode, ParentNode
+import os
 
-def markdown_to_html_node(markdown):
-    blocks = markdown_to_blocks(markdown)
-    
+
+def blocks_to_html_node(blocks):
+
     all_parent_nodes = []
     for block in blocks:
         type = block_to_block_type(block)
@@ -13,8 +14,10 @@ def markdown_to_html_node(markdown):
                 tag_end = block.index(' ')   
                 tag = f"h{tag_end}" #first found space corrisponds to num of #s
                 block = block[tag_end+1:]
-            case BlockType.CODE:      tag = "code"
-            case BlockType.QUOTE:     tag = "blockquote"
+            case BlockType.CODE:      tag = "code"                
+            case BlockType.QUOTE:     
+                tag = "blockquote"
+                block = clean_quote_block(block)
             case BlockType.UNORD_LIST: tag = "ul"
             case BlockType.ORD_LIST:   tag = "ol"               
         
@@ -26,11 +29,19 @@ def markdown_to_html_node(markdown):
             sub_nodes = textnodes_to_leafnodes(txt_nodes)
             all_parent_nodes.append(ParentNode(tag, sub_nodes, None))
         else:
-            all_parent_nodes.append(LeafNode(tag, block.replace("```", ""), None))
+            code_node = LeafNode(tag, block.replace("```", "").strip())
+            all_parent_nodes.append(ParentNode("pre", [code_node], None))
         
 
     return  ParentNode("div", all_parent_nodes, None)
         
+
+def markdown_to_title_and_content(markdown):
+    blocks = markdown_to_blocks(markdown)
+    title = extract_title(blocks)
+    node = blocks_to_html_node(blocks)
+    return title, node.to_html()
+
 
 #TextNode(text, type, url?)
 #LeafNode(tag, value, props?)
@@ -53,3 +64,22 @@ def convert_list_block(block):
         children.append(ParentNode("li", leaf_nodes))
 
     return children
+
+def clean_quote_block(block):
+    split_txt = block.split(">")
+    children = []
+    for line in split_txt:
+        new_line = line.strip()
+        if new_line == "": continue
+        children.append(new_line)
+    new_block = "\n".join(children)
+    #print(new_block)
+    return new_block
+
+def extract_title(md_blocks):
+    if md_blocks[0].startswith("# "):
+        title = str(md_blocks[0])
+        return title.replace("#", "").strip()
+    else: return "Untitled"
+
+
