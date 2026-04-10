@@ -2,52 +2,30 @@ from textnode import TextNode, TextType, split_nodes_delimiter, split_nodes_link
 from htmlnode import HtmlNode, LeafNode, ParentNode
 from generate_pages import generate_page, generate_all_pages
 from managedirectories import copy_directory
-import re
+import sys
 
-#print("hello world")
+
 
 def main():
+    print("-" * 100)
   
-    md = """
-# A beautifil title, the best title.
+    arguments = sys.argv
+    if len(arguments) > 1: 
+        basepath = arguments[1]
+        dest_directory = "docs"
+    else: #for local testing
+        basepath = "/"
+        dest_directory = "public" 
 
-##### Heading 5 
-
-This is **bolded** paragraph
-
-#### heading 4
-
-This is another paragraph with _italic_ text and `code` here
-This is the same paragraph on a new line
-
-- This is a list
-- with items
-
-# Heading 1
-
- 1. 1st elemant
- 2. second element
-
- ```
-this = that
-if that > other:
-    this.stop
-```
-
-more regular paragraphs for me.
-in smae blockk
-"""
-    #blocks = markdown_to_blocks(md)
-    #title, content = markdown_to_title_and_content(md)
-
+    print(basepath)
     print("-" * 100)
+
+    #copies images and css 
+    copy_directory("static", "docs") 
+    #converts .md content to html places them in page template and writes files to public dir
+    src_directory = "content"
     
-   ##print(content)
-
-    print("-" * 100)
-
-    copy_directory("static", "public")
-    generate_all_pages("content", "template.html", "public")
-    #generate_page("content/index.md", "template.html", "public/index.html")
+    generate_all_pages(src_directory, "template.html", dest_directory, basepath)
+    
 
 main()
